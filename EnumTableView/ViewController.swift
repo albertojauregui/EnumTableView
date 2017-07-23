@@ -24,6 +24,7 @@ let MovieData = [
     ["title": "10 Cloverfield Lane", "cast": "Mary Elizabeth Winstead, John Goodman, John Gallagher Jr.", "genre": "drama"],
     ["title": "A Hologram for the King", "cast": "Tom Hanks, Sarita Choudhury", "genre": "drama"],
     ["title": "Miracles from Heaven", "cast": "Jennifer Garner, Kylie Rogers, Martin Henderson", "genre": "drama"],
+    ["title": "Indie Game", "cast": "Some random people", "genre": "indie"]
 ]
 
 class ViewController: UIViewController {
