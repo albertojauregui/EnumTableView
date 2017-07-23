@@ -28,6 +28,8 @@ let MovieData = [
 
 class ViewController: UIViewController {
     
+    @IBOutlet weak var tableView: UITableView!
+    
     enum TableSection: Int {
         case action = 0, comedy, drama, indie, total
     }
@@ -35,6 +37,18 @@ class ViewController: UIViewController {
     let SectionHeaderHeight: CGFloat = 25
     
     var data = [TableSection: [[String: String]]]()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.delegate = self
+        tableView.dataSource = self
+        sortData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        tableView.reloadData()
+    }
     
     func sortData() {
         data[.action] = MovieData.filter({ $0["genre"] == "action" })
@@ -43,9 +57,65 @@ class ViewController: UIViewController {
         data[.indie] = MovieData.filter({ $0["genre"] == "indie" })
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
+}
 
+extension ViewController: UITableViewDataSource, UITableViewDelegate {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return TableSection.total.rawValue
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let tableSection = TableSection(rawValue: section), let movieData = data[tableSection] {
+            return movieData.count
+        }
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if let tableSection = TableSection(rawValue: section), let movieData = data[tableSection], movieData.count > 0 {
+            return SectionHeaderHeight
+        }
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: SectionHeaderHeight))
+        view.backgroundColor = UIColor(red: 253.0/255.0, green: 240.0/255.0, blue: 196.0/255.0, alpha: 1)
+        let label = UILabel(frame: CGRect(x: 15, y: 0, width: tableView.bounds.width - 30, height: SectionHeaderHeight))
+        label.font = UIFont.boldSystemFont(ofSize: 15)
+        label.textColor = .black
+        if let tableSection = TableSection(rawValue: section) {
+            switch tableSection {
+            case .action:
+                label.text = "Action"
+            case .comedy:
+                label.text = "Comedy"
+            case .drama:
+                label.text = "Drama"
+            case .indie:
+                label.text = "Indie"
+            default:
+                label.text = ""
+            }
+        }
+        view.addSubview(label)
+        return view
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        
+        if let tableSection = TableSection(rawValue: indexPath.section), let movie = data[tableSection]?[indexPath.row] {
+            if let titleLabel = cell.viewWithTag(10) as? UILabel {
+                titleLabel.text = movie["title"]
+            }
+            
+            if let subtitleLabel = cell.viewWithTag(20) as? UILabel {
+                subtitleLabel.text = movie["cast"]
+            }
+        }
+        
+        return cell
+    }
 }
 
