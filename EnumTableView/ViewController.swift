@@ -35,6 +35,13 @@ class ViewController: UIViewController {
     let SectionHeaderHeight: CGFloat = 25
     
     var data = [TableSection: [[String: String]]]()
+    
+    func sortData() {
+        data[.action] = MovieData.filter({ $0["genre"] == "action" })
+        data[.comedy] = MovieData.filter({ $0["genre"] == "comedy" })
+        data[.drama] = MovieData.filter({ $0["genre"] == "drama" })
+        data[.indie] = MovieData.filter({ $0["genre"] == "indie" })
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
